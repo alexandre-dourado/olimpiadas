@@ -596,7 +596,8 @@ function gerarPasta() {
 
   fetch(GAS_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    // Mudamos para text/plain para evitar o bloqueio de CORS (preflight OPTIONS) do navegador
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
     body: JSON.stringify({ nome: nome })
   })
   .then(r => r.json())
