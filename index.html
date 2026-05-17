@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+<<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-<title>1ª Olimpíada de Filosofia — UNIMONTES</title>
+<title>Galeria 1ª Olimpíada de Filosofia — UNIMONTES</title>
 <meta name="description" content="Galeria oficial da 1ª Olimpíada de Filosofia da Universidade Estadual de Montes Claros">
     <meta property="og:type" content="website">
 <meta property="og:url" content="https://olimpiadas.alexandredourado.com/">
@@ -14,26 +13,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+
 
 <style>
 /* ─── RESET & VARIAVEIS BAUHAUS / BRUTALISMO ────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg-color:   #F4F0EA; /* Off-white / Papel */
+  --bg-color:   #F4F0EA;
   --ink:        #111111;
-  --primary-y:  #FFBE0B; /* Amarelo Bauhaus */
-  --primary-r:  #FF006E; /* Vermelho vibrante */
-  --primary-b:  #3A86FF; /* Azul forte */
+  --primary-y:  #FFBE0B;
+  --primary-r:  #FF006E;
+  --primary-b:  #3A86FF;
   --border-w:   3px;
   --shadow-d:   6px;
-  --radius:     0px;     /* Zero radius = bem brutalista/geométrico */
+  --radius:     0px;
   --ease:       cubic-bezier(0.4, 0, 0.2, 1);
   --header-h:   70px;
-  --bento-cols: 4;       /* Alterado pelo Zoom */
+  --bento-cols: 4;
 }
-
-html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Space Grotesk', sans-serif;
@@ -44,28 +43,34 @@ body {
   position: relative;
 }
 
+/* ─── MODOS VISUAIS ESPECIAIS ───────────────────────────────────────────── */
+body.modo-leve #fragmentos-layer,
+body.modo-leve #bg-layer { display: none !important; }
+body.modo-leve .bento-item { box-shadow: none !important; border: 1px solid var(--ink) !important; transform: none !important; }
+body.modo-leve .bento-item img { filter: none !important; transform: none !important; }
+
+body.site-teatro { background: #050505 !important; color: #fff !important; }
+body.site-teatro #header, body.site-teatro #hero-cta, body.site-teatro #gallery-controls { display: none !important; }
+#teatro-container { display: none; position: fixed; inset: 0; background: #000; z-index: 9500; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
+.teatro-foco { max-width: 85vw; max-height: 75vh; border: 5px solid #fff; box-shadow: 0 0 80px rgba(255,255,255,0.25); object-fit: contain; background: #111; }
+
+#showroom-container { display: none; position: fixed; inset: 0; background: #111; z-index: 9600; }
+#showroom-img { width: 100%; height: 100%; object-fit: contain; background: #000; }
+
 /* ─── INTRO OVERLAY & BACKGROUND ────────────────────────────────────────── */
 #intro-overlay {
-  position: fixed; inset: 0; z-index: 9999;
-  background: var(--bg-color);
+  position: fixed; inset: 0; z-index: 9999; background: var(--bg-color);
   display: flex; align-items: center; justify-content: center;
   transition: opacity 1.2s var(--ease);
 }
-#intro-overlay.fade-out { opacity: 0; pointer-events: none; }
+#intro-overlay.looping { opacity: 1 !important; pointer-events: all !important; }
 #intro-webp { max-width: 90vw; max-height: 90vh; }
 
 #bg-layer { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
-#bg-img {
-  position: absolute; inset: 0; background-size: cover; background-position: center;
-  opacity: 0; transition: opacity 1.8s var(--ease); mix-blend-mode: multiply;
-}
-#bg-img.visible { opacity: 0.15; } /* Leve transparência para não poluir o grid */
+#bg-img { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 1.8s var(--ease); mix-blend-mode: multiply; }
+#bg-img.visible { opacity: 0.15; }
 
-/* ─── FRAGMENTOS VOADORES (ANIMAÇÕES) ───────────────────────────────────── */
-#fragmentos-layer {
-  position: fixed; inset: 0; z-index: 8000;
-  pointer-events: none; overflow: hidden;
-}
+#fragmentos-layer { position: fixed; inset: 0; z-index: 8000; pointer-events: none; overflow: hidden; }
 .frag { position: absolute; will-change: transform, opacity; }
 
 /* ─── APP SHELL & NAVBAR ────────────────────────────────────────────────── */
@@ -73,187 +78,105 @@ body {
 #app.visible { opacity: 1; }
 
 #header {
-  position: sticky; top: 0; z-index: 100;
-  background: var(--bg-color);
-  border-bottom: var(--border-w) solid var(--ink);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 24px; min-height: var(--header-h);
-  box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+  position: sticky; top: 0; z-index: 100; background: var(--bg-color); border-bottom: var(--border-w) solid var(--ink);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px; min-height: var(--header-h);
 }
-
-.brand-area { display: flex; align-items: center; gap: 16px; font-weight: 700; font-size: 18px; letter-spacing: -0.03em; text-transform: uppercase;}
+.brand-area { display: flex; align-items: center; gap: 16px; font-weight: 700; font-size: 18px; text-transform: uppercase;}
 .brand-area img { height: 40px; border: var(--border-w) solid var(--ink); border-radius: 50%; }
 
-.nav-links { display: flex; gap: 16px; align-items: center; }
-.nav-btn {
-  background: transparent; color: var(--ink); border: var(--border-w) solid transparent;
-  padding: 8px 16px; font-family: inherit; font-weight: 700; text-transform: uppercase;
-  cursor: pointer; transition: all 0.2s; font-size: 14px;
-}
-.nav-btn:hover { border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: translate(-2px, -2px); }
-.nav-btn.active { background: var(--primary-b); color: #fff; border-color: var(--ink); box-shadow: 3px 3px 0 var(--ink); transform: translate(-2px, -2px); }
-
-.mobile-toggle { display: none; background: var(--primary-y); border: var(--border-w) solid var(--ink); padding: 8px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); }
-
-/* ─── BIG CTA (CHAMADA PARA AÇÃO) ───────────────────────────────────────── */
-#hero-cta {
-  background: var(--primary-y);
-  border-bottom: var(--border-w) solid var(--ink);
-  padding: 48px 24px; text-align: center;
-  position: relative; overflow: hidden;
-}
-#hero-cta h1 {
-  font-size: clamp(28px, 6vw, 64px); font-weight: 700; text-transform: uppercase;
-  line-height: 1.1; margin-bottom: 24px; letter-spacing: -0.04em;
-  text-shadow: 3px 3px 0 #fff;
-}
-.cta-button-huge {
-  display: inline-block; background: var(--primary-r); color: #fff;
-  border: var(--border-w) solid var(--ink); padding: 16px 32px;
-  font-family: inherit; font-size: clamp(16px, 3vw, 24px); font-weight: 700;
-  text-transform: uppercase; cursor: pointer;
-  box-shadow: 6px 6px 0 var(--ink);
-  transition: transform 0.1s, box-shadow 0.1s;
-}
+/* ─── SUPER CTA ─────────────────────────────────────────────────────────── */
+#hero-cta { background: var(--primary-y); border-bottom: var(--border-w) solid var(--ink); padding: 48px 24px; text-align: center; }
+#hero-cta h1 { font-size: clamp(28px, 6vw, 64px); font-weight: 700; text-transform: uppercase; margin-bottom: 24px; letter-spacing: -0.04em; text-shadow: 3px 3px 0 #fff; }
+.cta-button-huge { display: inline-block; background: var(--primary-r); color: #fff; border: var(--border-w) solid var(--ink); padding: 16px 32px; font-size: clamp(16px, 3vw, 24px); font-weight: 700; text-transform: uppercase; cursor: pointer; box-shadow: 6px 6px 0 var(--ink); }
 .cta-button-huge:active { transform: translate(4px, 4px); box-shadow: 2px 2px 0 var(--ink); }
 
-/* ─── CONTROLES DA GALERIA (ZOOM & FILTROS) ─────────────────────────────── */
-#gallery-controls {
-  padding: 24px; border-bottom: var(--border-w) solid var(--ink);
-  display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center;
-  background: #fff;
-}
+/* ─── CONTROLES DA GALERIA ──────────────────────────────────────────────── */
+#gallery-controls { padding: 24px; border-bottom: var(--border-w) solid var(--ink); display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: center; background: #fff; }
 .folder-pills { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
-.pill {
-  background: var(--bg-color); border: var(--border-w) solid var(--ink);
-  padding: 8px 16px; font-family: inherit; font-weight: 600; font-size: 14px;
-  cursor: pointer; box-shadow: 3px 3px 0 var(--ink); transition: 0.1s; text-transform: uppercase;
-}
-.pill:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
+.pill { background: var(--bg-color); border: var(--border-w) solid var(--ink); padding: 8px 16px; font-weight: 600; font-size: 14px; cursor: pointer; box-shadow: 3px 3px 0 var(--ink); text-transform: uppercase; }
 .pill.active { background: var(--primary-b); color: #fff; }
 
+.action-block { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 .zoom-controls { display: flex; gap: 8px; align-items: center; font-weight: bold; background: var(--primary-y); border: var(--border-w) solid var(--ink); padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
 .zoom-btn { background: transparent; border: none; font-size: 20px; font-weight: bold; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
-.zoom-btn:hover { background: rgba(0,0,0,0.1); }
+
+.btn-special { background: var(--bg-color); border: var(--border-w) solid var(--ink); padding: 8px 14px; font-weight: 700; font-size: 13px; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0 var(--ink); }
+.btn-special.active { background: var(--primary-r); color: white; }
+.btn-zip { background: #3a86ff; color: white; }
 
 /* ─── BENTO GRID ────────────────────────────────────────────────────────── */
 #main-content { padding: 24px; }
-
-.bento-grid {
-  display: grid;
-  grid-template-columns: repeat(var(--bento-cols), 1fr);
-  grid-auto-rows: minmax(150px, 250px);
-  grid-auto-flow: dense; /* Crucial para o efeito Bento (preencher buracos) */
-  gap: 16px;
-  width: 100%;
-}
+.bento-grid { display: grid; grid-template-columns: repeat(var(--bento-cols), 1fr); grid-auto-rows: minmax(150px, 250px); grid-auto-flow: dense; gap: 16px; width: 100%; }
 
 .bento-item {
-  position: relative;
-  background: #fff;
-  border: var(--border-w) solid var(--ink);
-  box-shadow: var(--shadow-d) var(--shadow-d) 0 var(--ink);
-  overflow: hidden; cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.bento-item:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: 10px 10px 0 var(--ink);
-}
-
-/* Modificadores do Bento */
-.span-col-2 { grid-column: span 2; }
-.span-row-2 { grid-row: span 2; }
-@media(max-width: 768px) {
-  .span-col-2 { grid-column: span 1; } /* Em telas menores, quebra o col span para caber */
+  position: relative; background: #fff; border: var(--border-w) solid var(--ink); box-shadow: var(--shadow-d) var(--shadow-d) 0 var(--ink); overflow: hidden; cursor: pointer; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 
 .bento-item img {
   width: 100%; height: 100%; object-fit: cover;
-  transition: transform 0.3s ease;
+  filter: grayscale(100%);
+  transition: filter 0.25s var(--ease), transform 0.25s var(--ease);
 }
-.bento-item:hover img { transform: scale(1.05); }
+.bento-item:hover { transform: translateY(-6px) scale(1.02); z-index: 10; box-shadow: 12px 12px 0 var(--ink); }
+.bento-item:hover img, .bento-item:active img { filter: grayscale(0%); transform: scale(1.06); }
 
-.bento-tag {
-  position: absolute; bottom: 8px; left: 8px;
-  background: var(--primary-y); border: 2px solid var(--ink);
-  padding: 4px 8px; font-size: 11px; font-weight: 700; text-transform: uppercase;
-  box-shadow: 2px 2px 0 var(--ink); max-width: calc(100% - 16px);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
+.span-col-2 { grid-column: span 2; }
+.span-row-2 { grid-row: span 2; }
+@media(max-width: 768px) { .span-col-2 { grid-column: span 1; } :root { --bento-cols: 2 !important; } }
 
-/* ─── MODAIS (VISUALIZAR FOTO & UPLOAD) ─────────────────────────────────── */
-.modal-overlay {
-  display: none; position: fixed; inset: 0; z-index: 9999;
-  background: rgba(244, 240, 234, 0.9); backdrop-filter: blur(5px);
-  padding: 24px; align-items: center; justify-content: center;
-}
+.bento-tag { position: absolute; bottom: 8px; left: 8px; background: var(--primary-y); border: 2px solid var(--ink); padding: 4px 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; box-shadow: 2px 2px 0 var(--ink); }
+.video-badge { position: absolute; top: 8px; right: 8px; background: var(--primary-r); color: #fff; border: 2px solid var(--ink); padding: 4px 8px; font-size: 11px; font-weight: 700; box-shadow: 2px 2px 0 var(--ink); z-index: 5; }
+
+/* ─── MODAL FULL SCREEN BRUTALISTA ──────────────────────────────────────── */
+.modal-overlay { display: none; position: fixed; inset: 0; z-index: 9999; background: rgba(0, 0, 0, 0.95); padding: 12px; align-items: center; justify-content: center; }
 .modal-overlay.open { display: flex; }
-
-.modal-box {
-  background: #fff; border: var(--border-w) solid var(--ink);
-  box-shadow: 12px 12px 0 var(--ink);
-  max-width: 90vw; max-height: 90vh; display: flex; flex-direction: column;
-  position: relative;
-}
-
-/* Modal Foto */
-#modal-img-wrap { flex: 1; overflow: hidden; min-height: 300px; display: flex; align-items: center; justify-content: center; background: #eee; border-bottom: var(--border-w) solid var(--ink); }
-#modal-img { max-width: 100%; max-height: 70vh; object-fit: contain; }
+.modal-box { background: #fff; border: var(--border-w) solid var(--ink); box-shadow: 12px 12px 0 var(--ink); width: 100%; height: 100%; display: flex; flex-direction: column; position: relative; }
+#modal-img-wrap { flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #000; border-bottom: var(--border-w) solid var(--ink); }
+#modal-img { width: 100%; height: 100%; object-fit: contain; }
 .modal-bar { padding: 16px; display: flex; justify-content: space-between; align-items: center; background: var(--primary-y); gap: 16px;}
-.modal-nav-btn {
-  background: #fff; border: var(--border-w) solid var(--ink); box-shadow: 3px 3px 0 var(--ink);
-  width: 40px; height: 40px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.modal-nav-btn:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--ink); }
-.modal-close { position: absolute; top: -16px; right: -16px; background: var(--primary-r); color: #fff; border: var(--border-w) solid var(--ink); border-radius: 50%; width: 40px; height: 40px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); display: flex; align-items: center; justify-content: center;}
+.modal-nav-btn { background: #fff; border: var(--border-w) solid var(--ink); box-shadow: 3px 3px 0 var(--ink); width: 40px; height: 40px; font-size: 20px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.modal-close { position: absolute; top: 16px; right: 16px; background: var(--primary-r); color: #fff; border: var(--border-w) solid var(--ink); border-radius: 50%; width: 40px; height: 40px; font-weight: bold; cursor: pointer; box-shadow: 2px 2px 0 var(--ink); display: flex; align-items: center; justify-content: center; z-index: 10;}
 
 /* Modal Upload */
-#upload-box { width: 100%; max-width: 500px; padding: 32px; background: #fff; border: var(--border-w) solid var(--ink); box-shadow: 12px 12px 0 var(--primary-b); position: relative;}
-#upload-box h2 { font-size: 24px; text-transform: uppercase; margin-bottom: 16px; border-bottom: 3px solid var(--ink); padding-bottom: 8px;}
-.upload-input { width: 100%; padding: 16px; border: var(--border-w) solid var(--ink); font-family: inherit; font-size: 16px; font-weight: 600; margin-bottom: 16px; background: var(--bg-color); box-shadow: inset 2px 2px 0 rgba(0,0,0,0.1);}
-.btn-submit { width: 100%; background: var(--primary-b); color: #fff; border: var(--border-w) solid var(--ink); padding: 16px; font-family: inherit; font-size: 18px; font-weight: 700; text-transform: uppercase; cursor: pointer; box-shadow: 4px 4px 0 var(--ink); transition: 0.1s;}
-.btn-submit:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--ink); }
-#upload-feedback { margin-top: 12px; font-weight: 700; }
+#upload-box { width: 100%; max-width: 500px; padding: 32px; background: #fff; border: var(--border-w) solid var(--ink); box-shadow: 12px 12px 0 var(--primary-b); position: relative; margin: auto;}
+.upload-input { width: 100%; padding: 16px; border: var(--border-w) solid var(--ink); font-family: inherit; font-size: 16px; font-weight: 600; margin-bottom: 16px; background: var(--bg-color); }
+.btn-submit { width: 100%; background: var(--primary-b); color: #fff; border: var(--border-w) solid var(--ink); padding: 16px; font-size: 18px; font-weight: 700; text-transform: uppercase; cursor: pointer; box-shadow: 4px 4px 0 var(--ink); }
 #upload-resultado { display: none; margin-top: 16px; background: var(--primary-y); border: 2px solid var(--ink); padding: 16px; box-shadow: 4px 4px 0 var(--ink); }
-#link-pasta { display: block; word-break: break-all; color: var(--ink); font-weight: bold; margin-top: 8px; text-decoration: underline; }
-
-/* ─── ESTADOS & RESPONSIVIDADE ──────────────────────────────────────────── */
-.estado { padding: 48px; text-align: center; border: var(--border-w) dashed var(--ink); margin: 24px; background: #fff; font-weight: bold; text-transform: uppercase; }
-
-@media (max-width: 768px) {
-  .nav-links { display: none; position: absolute; top: var(--header-h); left: 0; right: 0; background: var(--bg-color); flex-direction: column; padding: 16px; border-bottom: var(--border-w) solid var(--ink); box-shadow: 0 10px 0 rgba(0,0,0,0.1); }
-  .nav-links.open { display: flex; }
-  .mobile-toggle { display: block; }
-  :root { --bento-cols: 2; }
-  #gallery-controls { flex-direction: column; align-items: stretch; }
-  .zoom-controls { align-self: flex-end; }
-}
+.estado { padding: 48px; text-align: center; border: var(--border-w) dashed var(--ink); margin: 24px; background: #fff; font-weight: bold; text-transform: uppercase; color: var(--ink); }
 </style>
 </head>
 <body>
 
+<!-- INTRO OVERLAY -->
 <div id="intro-overlay">
   <img id="intro-webp" src="https://raw.githubusercontent.com/alexandre-dourado/olimpiadas/refs/heads/main/cursor/FILOSOFIA_E_A_CIDADE.webp" alt="Filosofia e a Cidade">
 </div>
 
-<div id="fragmentos-layer"></div>
+<!-- CONTAINER MODO SHOWROOM -->
+<div id="showroom-container">
+  <img id="showroom-img" src="" alt="Showroom">
+</div>
 
+<!-- CONTAINER MODO TEATRO -->
+<div id="teatro-container">
+  <button class="modal-close" style="top:20px; right:20px;" onclick="location.reload()">X</button>
+  <img class="teatro-foco" id="teatro-img" src="" alt="Teatro Focal">
+  <div style="margin-top: 24px; display:flex; gap:20px;">
+    <button class="modal-nav-btn" onclick="navegarTeatro(-1)">◄</button>
+    <button class="modal-nav-btn" onclick="navegarTeatro(1)">►</button>
+  </div>
+</div>
+
+<div id="fragmentos-layer"></div>
 <div id="bg-layer"><div id="bg-img"></div></div>
 
+<!-- APP PRINCIPAL -->
 <div id="app">
-
   <header id="header">
     <div class="brand-area">
       <img src="https://raw.githubusercontent.com/alexandre-dourado/olimpiadas/refs/heads/main/logo.jpg" alt="Logo">
       Olimpíada de Filosofia
     </div>
-    <nav class="nav-links" id="nav-links">
-      <button class="nav-btn active" onclick="alert('Funcionalidade Galeria Ativa!')">Galeria</button>
-      <button class="nav-btn" onclick="alert('Área de Vídeos em breve!')">Vídeos</button>
-      <button class="nav-btn" onclick="alert('Sobre o evento em breve!')">Evento</button>
-    </nav>
-    <button class="mobile-toggle" onclick="document.getElementById('nav-links').classList.toggle('open')">MENU</button>
   </header>
 
   <section id="hero-cta">
@@ -265,44 +188,54 @@ body {
     <div class="folder-pills" id="pastas-nav">
       <button class="pill active">Carregando Pastas...</button>
     </div>
-    <div class="zoom-controls">
-      ZOOM GRID
-      <button class="zoom-btn" onclick="ajustarZoom(1)">-</button>
-      <button class="zoom-btn" onclick="ajustarZoom(-1)">+</button>
+    
+    <div class="action-block">
+      <button class="btn-special" id="btn-toggle-leve" onclick="toggleModoLeve()">⚡ Modo Leve</button>
+      <button class="btn-special btn-zip" onclick="baixarTudoZip()">📦 Baixar Tudo (.ZIP)</button>
+      
+      <div class="zoom-controls">
+        GRID
+        <button class="zoom-btn" onclick="ajustarZoom(1)">-</button>
+        <button class="zoom-btn" onclick="ajustarZoom(-1)">+</button>
+      </div>
     </div>
   </div>
 
   <main id="main-content">
-    <div id="galeria-grid" class="bento-grid">
-      </div>
+    <div id="galeria-grid" class="bento-grid"></div>
   </main>
+</div>
 
-</div><div id="modal" class="modal-overlay" onclick="fecharModalSeFundo(event)">
-  <div class="modal-box">
+<!-- MODAL VISUALIZAR -->
+<div id="modal" class="modal-overlay" onclick="fecharModalSeFundo(event)">
+  <div class="modal-box" id="modal-content-box">
     <button class="modal-close" onclick="fecharModal()">X</button>
-    <div id="modal-img-wrap"><img id="modal-img" src="" alt=""></div>
+    <div id="modal-img-wrap">
+      <img id="modal-img" src="" alt="">
+      <iframe id="modal-video" src="" frameborder="0" allow="autoplay; fullscreen" style="display:none; width:100%; height:100%;"></iframe>
+    </div>
     <div class="modal-bar">
       <button class="modal-nav-btn" onclick="navegarModal(-1)">◄</button>
       <div style="flex:1; text-align:center; font-weight:bold; font-size: 14px; margin: 0 16px;">
-        <div id="modal-nome">Nome da Foto</div>
-        <a id="modal-dl" href="#" target="_blank" style="color:var(--ink); font-size:12px;">↓ Baixar Original</a>
+        <div id="modal-nome">Nome do Arquivo</div>
+        <a id="modal-dl" href="#" target="_blank" style="color:var(--ink); font-size:12px; text-decoration:underline;">↓ Baixar Original</a>
       </div>
       <button class="modal-nav-btn" onclick="navegarModal(1)">►</button>
     </div>
   </div>
 </div>
 
+<!-- MODAL UPLOAD -->
 <div id="modal-upload" class="modal-overlay">
   <div id="upload-box">
-    <button class="modal-close" onclick="fecharUpload()">X</button>
-    <h2>Criar Pasta de Contribuição</h2>
-    <p style="margin-bottom: 16px; font-weight: 600;">Informe seu nome ou da sua escola para gerarmos um link exclusivo no Drive.</p>
+    <button class="modal-close" style="top:-16px; right:-16px;" onclick="fecharUpload()">X</button>
+    <h2 style="text-transform:uppercase; margin-bottom:12px;">Criar Pasta no Drive</h2>
     <input type="text" id="upload-nome" class="upload-input" placeholder="Seu nome ou escola..." maxlength="80">
     <button class="btn-submit" id="btn-gerar-pasta" onclick="gerarPasta()">Gerar Link de Upload</button>
-    <div id="upload-feedback"></div>
+    <div id="upload-feedback" style="margin-top:10px; font-weight:bold;"></div>
     <div id="upload-resultado">
-      SUA PASTA ESTÁ PRONTA! Acesse o link abaixo e arraste suas fotos:
-      <a id="link-pasta" href="#" target="_blank">Acessar Drive</a>
+      SUA PASTA ESTÁ PRONTA! Envie seus arquivos:
+      <a id="link-pasta" href="#" target="_blank" style="display:block; font-weight:bold; margin-top:8px; word-break:break-all;">Acessar Drive</a>
     </div>
   </div>
 </div>
@@ -310,260 +243,329 @@ body {
 <script>
 "use strict";
 
-// CONFIGURAÇÕES BASE
 const GAS_URL = "https://script.google.com/macros/s/AKfycbxYCzj5j2SLMMw0pIBxL-5tBe7-kVySHGb7H8fG6rEehPmeEze1v8bRza8WHTA1kpkk/exec";
 const BG_URLS = [
   "https://raw.githubusercontent.com/alexandre-dourado/olimpiadas/refs/heads/main/cursor/bg1.png",
   "https://raw.githubusercontent.com/alexandre-dourado/olimpiadas/refs/heads/main/cursor/bg2.png"
 ];
 
-// URLs dos Fragmentos (m1 ao m13)
 const FRAG_BASE = "https://raw.githubusercontent.com/alexandre-dourado/olimpiadas/refs/heads/main/cursor/";
 const FRAG_URLS = [];
 for (let i = 1; i <= 13; i++) { FRAG_URLS.push(FRAG_BASE + "m" + i + ".webp"); }
-FRAG_URLS.forEach(u => (new Image()).src = u); // Pré-carga
 
-// ESTADO GLOBAL
 const S = {
   cliques: 0,
   introOk: false,
   fotosFlat: [],
   pastaAtiva: null,
   modalIdx: 0,
-  zoomLevel: window.innerWidth > 768 ? 4 : 2, // Inicia com 4 no Desk, 2 no mobile
+  zoomLevel: window.innerWidth > 768 ? 4 : 2,
+  modoLeve: false,
+  modoSitePlanilha: "normal"
 };
 
-// INICIALIZAÇÃO
 document.addEventListener("DOMContentLoaded", () => {
   document.documentElement.style.setProperty('--bento-cols', S.zoomLevel);
-  iniciarIntro();
   carregarDados();
   document.addEventListener("click", onClickGlobal, true);
   document.addEventListener("keydown", onKeyDown);
 });
 
-// ─── LÓGICA DE INTRODUÇÃO ───────────────────────────────────────────────
-function iniciarIntro() {
+function iniciarIntroOuModos() {
   const overlay = document.getElementById("intro-overlay");
+  
+  if (S.modoSitePlanilha === "suspensao") {
+    overlay.classList.add("looping");
+    return;
+  }
+
+  if (S.modoSitePlanilha === "showroom") {
+    overlay.style.display = "none";
+    document.getElementById("showroom-container").style.display = "block";
+    iniciarShowroomAutoplay();
+    return;
+  }
+
+  if (S.modoSitePlanilha === "teatro") {
+    overlay.style.display = "none";
+    document.body.classList.add("site-teatro");
+    document.getElementById("teatro-container").style.display = "flex";
+    atualizarTeatroFoco();
+    return;
+  }
+
   setTimeout(() => {
     overlay.classList.add("fade-out");
-    // Background aleatório pós intro
-    const bgUrl = BG_URLS[Math.floor(Math.random() * BG_URLS.length)];
-    const bgEl  = document.getElementById("bg-img");
-    bgEl.style.backgroundImage = `url('${bgUrl}')`;
-    bgEl.classList.add("visible");
-
+    if (!S.modoLeve) {
+      const bgUrl = BG_URLS[Math.floor(Math.random() * BG_URLS.length)];
+      const bgEl  = document.getElementById("bg-img");
+      bgEl.style.backgroundImage = `url('${bgUrl}')`;
+      bgEl.classList.add("visible");
+    }
     document.getElementById("app").classList.add("visible");
     setTimeout(() => {
       overlay.style.display = "none";
       S.introOk = true;
-      agendarCometa();
+      if (!S.modoLeve) agendarCometa();
     }, 1200);
   }, 8000);
 }
 
-// ─── ANIMAÇÕES: CLIQUES (CHUVA / GRAVIDADE ZERO) ────────────────────────
 function onClickGlobal(e) {
-  if (!S.introOk || S.cliques >= 2) return;
-  if (e.target.closest('.modal-overlay.open')) return; // Ignora se modal aberto
+  if (!S.introOk || S.cliques >= 2 || S.modoLeve) return;
+  if (e.target.closest('.modal-overlay.open') || S.modoSitePlanilha !== "normal") return;
   
   S.cliques++;
   const mode = Math.random() > 0.5 ? "chuva" : "zerog";
   const layer = document.getElementById("fragmentos-layer");
   
-  // Dispara os 13 icones de uma vez com leve atraso
   [...FRAG_URLS].sort(() => Math.random() - 0.5).forEach((url, i) => {
     setTimeout(() => lancarParticula(layer, url, mode), i * 100);
   });
 }
 
 function lancarParticula(layer, url, mode) {
+  if (S.modoLeve) return;
   const el = document.createElement("img");
-  el.src = url;
-  el.className = "frag";
+  el.src = url; el.className = "frag";
   const size = 60 + Math.random() * 80;
   el.style.width = size + "px";
   
-  const w = window.innerWidth;
-  const h = window.innerHeight;
+  const w = window.innerWidth; const h = window.innerHeight;
   const startX = Math.random() * w;
-  
-  // Chuva: começa em cima, cai. ZeroG: começa embaixo, sobe.
   const startY = mode === "chuva" ? -size - 20 : h + 20;
   const endY   = mode === "chuva" ? h + 20 : -size - 20;
   
-  const duration = 2500 + Math.random() * 2000;
-  const rotation = (Math.random() - 0.5) * 360; // Gira um pouco enquanto cai/sobe
-
-  el.style.left = startX + "px";
-  el.style.top = startY + "px";
+  el.style.left = startX + "px"; el.style.top = startY + "px";
   layer.appendChild(el);
 
-  // Animação usando a Web Animations API para performance
-  const animation = el.animate([
+  el.animate([
     { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
-    { transform: `translateY(${endY - startY}px) rotate(${rotation}deg)`, opacity: 0.8 }
-  ], {
-    duration: duration,
-    easing: 'ease-in-out'
-  });
-
-  animation.onfinish = () => el.remove();
+    { transform: `translateY(${endY - startY}px) rotate(${(Math.random() - 0.5) * 360}deg)`, opacity: 0.8 }
+  ], { duration: 2500 + Math.random() * 2000, easing: 'ease-in-out' }).onfinish = () => el.remove();
 }
 
-// ─── ANIMAÇÕES: COMETA (A CADA ~60 SEG) ─────────────────────────────────
 function agendarCometa() {
-  const delay = 45000 + Math.random() * 30000; // Entre 45 e 75 segundos
+  if (S.modoLeve || S.modoSitePlanilha !== "normal") return;
   setTimeout(() => {
-    if (!S.introOk) return agendarCometa();
+    if (!S.introOk || S.modoLeve) return agendarCometa();
     const url = FRAG_URLS[Math.floor(Math.random() * FRAG_URLS.length)];
     const layer = document.getElementById("fragmentos-layer");
-    
     const el = document.createElement("img");
-    el.src = url;
-    el.className = "frag";
-    el.style.width = (80 + Math.random() * 100) + "px";
+    el.src = url; el.className = "frag"; el.style.width = (80 + Math.random() * 100) + "px";
     
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    
-    // Cruzar a tela lateralmente
+    const w = window.innerWidth; const h = window.innerHeight;
     const startLeft = Math.random() > 0.5;
-    const startX = startLeft ? -200 : w + 200;
-    const endX   = startLeft ? w + 200 : -200;
+    const startX = startLeft ? -200 : w + 200; const endX = startLeft ? w + 200 : -200;
     const startY = Math.random() * h;
-    const endY   = startY + (Math.random() - 0.5) * 400; // Leve diagonal
-    
-    el.style.left = startX + "px";
-    el.style.top = startY + "px";
+    el.style.left = startX + "px"; el.style.top = startY + "px";
     layer.appendChild(el);
 
-    const duration = 3000 + Math.random() * 3000; // De 3s a 6s
-    const animation = el.animate([
+    el.animate([
       { transform: 'translate(0, 0) rotate(0deg)' },
-      { transform: `translate(${endX - startX}px, ${endY - startY}px) rotate(${startLeft ? 180 : -180}deg)` }
-    ], { duration: duration, easing: 'linear' });
-
-    animation.onfinish = () => { el.remove(); agendarCometa(); };
-  }, delay);
+      { transform: `translate(${endX - startX}px, ${(Math.random() - 0.5) * 400}px) rotate(180deg)` }
+    ], { duration: 3000 + Math.random() * 3000, easing: 'linear' }).onfinish = () => { el.remove(); agendarCometa(); };
+  }, 45000 + Math.random() * 30000);
 }
 
-// ─── BUSCA DE DADOS (GALERIA) ───────────────────────────────────────────
 function carregarDados() {
   fetch(GAS_URL)
     .then(r => r.json())
-    .then(json => processarDados(json))
+    .then(json => {
+      S.modoSitePlanilha = (json.config && json.config.modo_site) ? json.config.modo_site : "normal";
+      processarDados(json);
+      iniciarIntroOuModos();
+    })
     .catch(err => {
       console.error(err);
-      document.getElementById('galeria-grid').innerHTML = '<div class="estado">Erro ao carregar galeria.</div>';
+      document.getElementById('galeria-grid').innerHTML = '<div class="estado">Erro de carregamento.</div>';
+      iniciarIntroOuModos();
     });
 }
 
 function processarDados(json) {
   const pastas = json.pastas || [];
-  const imagens = [];
+  const midias = [];
   pastas.forEach(p => {
     (p.itens || []).forEach(item => {
-      if (item.tipo === "imagem") {
+      if (item.tipo === "imagem" || item.tipo === "video") {
         item._pasta = p.nome;
-        imagens.push(item);
+        midias.push(item);
       }
     });
   });
-  
-  S.fotosFlat = imagens;
-  renderizarPastas(pastas, imagens);
-  renderizarGrid(imagens);
+  S.fotosFlat = midias;
+  renderizarPastas(pastas, midias);
+  renderizarGrid(midias);
 }
 
-// ─── RENDERIZAÇÃO DO BENTO GRID ─────────────────────────────────────────
-function renderizarPastas(pastas, imagens) {
+function renderizarPastas(pastas, midias) {
   const nav = document.getElementById("pastas-nav");
+  if (!nav) return;
   nav.innerHTML = '';
-  
   const btnAll = document.createElement("button");
-  btnAll.className = "pill active";
-  btnAll.innerText = "TODAS AS FOTOS";
-  btnAll.onclick = () => filtrarPasta(null, btnAll, imagens);
+  btnAll.className = "pill active"; btnAll.innerText = "TODOS OS ARQUIVOS";
+  btnAll.onclick = () => filtrarPasta(null, btnAll, midias);
   nav.appendChild(btnAll);
 
   pastas.forEach(p => {
-    const temImg = (p.itens || []).some(i => i.tipo === "imagem");
-    if (!temImg) return;
-    const btn = document.createElement("button");
-    btn.className = "pill";
-    btn.innerText = p.nome;
-    btn.onclick = () => filtrarPasta(p.nome, btn, imagens);
-    nav.appendChild(btn);
+    if ((p.itens || []).some(i => i.tipo === "imagem" || i.tipo === "video")) {
+      const btn = document.createElement("button");
+      btn.className = "pill"; btn.innerText = p.nome;
+      btn.onclick = () => filtrarPasta(p.nome, btn, midias);
+      nav.appendChild(btn);
+    }
   });
 }
 
-function filtrarPasta(nome, btnEl, todasImagens) {
+function filtrarPasta(nome, btnEl, todasMidias) {
   document.querySelectorAll(".pill").forEach(p => p.classList.remove("active"));
   btnEl.classList.add("active");
   S.pastaAtiva = nome;
-  const filtradas = nome ? todasImagens.filter(i => i._pasta === nome) : todasImagens;
-  renderizarGrid(filtradas);
+  renderizarGrid(nome ? todasMidias.filter(i => i._pasta === nome) : todasMidias);
 }
 
 function renderizarGrid(itens) {
   const grid = document.getElementById("galeria-grid");
+  if (!grid) return;
   grid.innerHTML = "";
 
   if (!itens.length) {
-    grid.innerHTML = '<div class="estado" style="grid-column: 1 / -1">Nenhuma foto encontrada.</div>';
+    grid.innerHTML = '<div class="estado" style="grid-column: 1 / -1">Nenhum arquivo encontrado.</div>';
     return;
   }
 
-  itens.forEach((item, idxOriginal) => {
-    // Acha o index real na array global para o modal funcionar certinho
-    const realIdx = S.fotosFlat.indexOf(item); 
-    
+  itens.forEach((item) => {
+    const realIdx = S.fotosFlat.indexOf(item);
     const div = document.createElement("div");
-    div.className = "bento-item " + getRandomBentoClass(); // Distribui classes Bento
+    div.className = "bento-item " + (S.modoLeve ? "" : getRandomBentoClass());
     div.onclick = () => abrirModal(realIdx);
 
     const img = document.createElement("img");
-    img.src = item.thumb || item.full;
+    if (item.tipo === "video") {
+      img.src = "https://raw.githubusercontent.com/alexandre-dourado/olimpiadas/refs/heads/main/logo.jpg";
+      const badge = document.createElement("div"); badge.className = "video-badge"; badge.innerText = "▶ VÍDEO";
+      div.appendChild(badge);
+    } else {
+      img.src = item.thumb;
+    }
     img.alt = item.nome;
-    img.loading = "lazy";
-
-    const tag = document.createElement("div");
-    tag.className = "bento-tag";
-    tag.innerText = item._pasta || "Geral";
-
     div.appendChild(img);
+
+    const tag = document.createElement("div"); tag.className = "bento-tag"; tag.innerText = item._pasta || "Geral";
     div.appendChild(tag);
     grid.appendChild(div);
   });
 }
 
-// Retorna aleatoriamente as classes que fazem o Bento box ter tamanhos variados
 function getRandomBentoClass() {
   const r = Math.random();
-  if (r > 0.85) return "span-col-2 span-row-2"; // 15% Grande
-  if (r > 0.65) return "span-col-2";            // 20% Largo
-  if (r > 0.45) return "span-row-2";            // 20% Alto
-  return "";                                    // 45% Padrão (1x1)
+  if (r > 0.85) return "span-col-2 span-row-2";
+  if (r > 0.65) return "span-col-2";
+  if (r > 0.45) return "span-row-2";
+  return "";
 }
 
-// ─── ZOOM DO GRID (COLUNAS) ─────────────────────────────────────────────
 function ajustarZoom(delta) {
-  // delta 1 = aproxima (menos colunas), delta -1 = afasta (mais colunas)
   S.zoomLevel = Math.max(1, Math.min(8, S.zoomLevel + delta));
   document.documentElement.style.setProperty('--bento-cols', S.zoomLevel);
 }
 
-// ─── LÓGICA DE MODAIS ───────────────────────────────────────────────────
+function toggleModoLeve() {
+  S.modoLeve = !S.modoLeve;
+  const btn = document.getElementById("btn-toggle-leve");
+  if (S.modoLeve) {
+    document.body.classList.add("modo-leve");
+    btn.classList.add("active");
+    btn.innerText = "⚡ Modo Leve: ATIVO";
+    document.getElementById("bg-img").classList.remove("visible");
+  } else {
+    document.body.classList.remove("modo-leve");
+    btn.classList.remove("active");
+    btn.innerText = "⚡ Modo Leve";
+  }
+  renderizarGrid(S.pastaAtiva ? S.fotosFlat.filter(i => i._pasta === S.pastaAtiva) : S.fotosFlat);
+}
+
+function iniciarShowroomAutoplay() {
+  if (!S.fotosFlat.length) return;
+  let idx = 0;
+  const showImg = document.getElementById("showroom-img");
+  const trocarCena = () => {
+    const item = S.fotosFlat[idx];
+    if (item && item.tipo === "imagem") showImg.src = item.full;
+    idx = (idx + 1) % S.fotosFlat.length;
+  };
+  trocarCena();
+  setInterval(trocarCena, 4000);
+}
+
+function atualizarTeatroFoco() {
+  if (!S.fotosFlat.length) return;
+  const item = S.fotosFlat[S.modalIdx];
+  const teatroImg = document.getElementById("teatro-img");
+  if (item) teatroImg.src = item.full;
+}
+
+function navegarTeatro(dir) {
+  const max = S.fotosFlat.length;
+  S.modalIdx = (S.modalIdx + dir + max) % max;
+  atualizarTeatroFoco();
+}
+
+async function baixarTudoZip() {
+  if (!S.fotosFlat.length) return alert("Nenhuma foto disponível para baixar!");
+  const confirmacao = confirm(`Deseja iniciar o download compactado de todos os ${S.fotosFlat.length} arquivos? Isso pode demorar um pouco.`);
+  if (!confirmacao) return;
+
+  const zip = new JSZip();
+  const pastaZip = zip.folder("olimpiadas_arquivos");
+  
+  alert("Processando arquivos... Não feche a página.");
+  
+  let baixados = 0;
+  for (let item of S.fotosFlat) {
+    try {
+      const response = await fetch(item.download);
+      const blob = await response.blob();
+      const extensao = item.mimeType.split("/")[1] || "jpg";
+      pastaZip.file(`${item._pasta || "Geral"}_${baixados + 1}.${extensao}`, blob);
+      baixados++;
+    } catch (e) {
+      console.error("Erro ao compactar arquivo individual: ", e);
+    }
+  }
+
+  if (baixados === 0) {
+    alert("Erro de segurança CORS ao tentar baixar múltiplos arquivos diretamente. Baixe individualmente clicando nas fotos.");
+    return;
+  }
+
+  zip.generateAsync({ type: "blob" }).then((content) => {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(content);
+    link.download = "Galeria_Olimpiadas_Filosofia.zip";
+    link.click();
+    alert("🚀 Download do arquivo .ZIP iniciado com sucesso!");
+  });
+}
+
 function abrirModal(idx) {
   if (idx < 0 || idx >= S.fotosFlat.length) return;
   S.modalIdx = idx;
   const item = S.fotosFlat[idx];
-  
-  document.getElementById("modal-img").src = item.full;
+  const elImg = document.getElementById("modal-img");
+  const elVid = document.getElementById("modal-video");
+
+  if (item.tipo === "video") {
+    elImg.style.display = "none"; elVid.style.display = "block";
+    elVid.src = `https://drive.google.com/file/d/${item.id}/preview`;
+  } else {
+    elVid.style.display = "none"; elVid.src = ""; elImg.style.display = "block";
+    elImg.src = item.full;
+  }
   document.getElementById("modal-nome").innerText = item.nome;
   document.getElementById("modal-dl").href = item.download;
-  
   document.getElementById("modal").classList.add("open");
   document.body.style.overflow = "hidden";
 }
@@ -577,10 +579,10 @@ function navegarModal(dir) {
 function fecharModal() {
   document.getElementById("modal").classList.remove("open");
   document.body.style.overflow = "";
+  document.getElementById("modal-video").src = "";
 }
-function fecharModalSeFundo(e) { if (e.target.id === "modal") fecharModal(); }
+function fecharModalSeFundo(e) { if (e.target.id === "modal" || e.target.id === "modal-content-box") fecharModal(); }
 
-// ─── LÓGICA DE UPLOAD ───────────────────────────────────────────────────
 function abrirUpload() {
   document.getElementById("modal-upload").classList.add("open");
   document.getElementById("upload-resultado").style.display = "none";
@@ -593,40 +595,35 @@ function gerarPasta() {
   const nome = document.getElementById("upload-nome").value.trim();
   const fb = document.getElementById("upload-feedback");
   const btn = document.getElementById("btn-gerar-pasta");
+  if (!nome) { fb.innerText = "Por favor, informe seu nome ou escola."; fb.style.color = "red"; return; }
 
-  if (!nome) { fb.innerText = "Por favor, digite seu nome ou escola."; fb.style.color = "red"; return; }
-
-  btn.disabled = true; btn.innerText = "GERANDO...";
-  fb.innerText = "Criando pasta no Drive..."; fb.style.color = "inherit";
+  btn.disabled = true; btn.innerText = "PROCESSANDO...";
+  fb.innerText = "Criando pasta no Google Drive..."; fb.style.color = "inherit";
 
   fetch(GAS_URL, {
     method: "POST",
-    // Mudamos para text/plain para evitar o bloqueio de CORS (preflight OPTIONS) do navegador
-    headers: { "Content-Type": "text/plain;charset=utf-8" }, 
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify({ nome: nome })
   })
   .then(r => r.json())
   .then(json => {
-    if (!json.ok) throw new Error(json.erro || "Erro na API");
+    if (!json.ok) throw new Error(json.erro || "Erro de API");
     document.getElementById("link-pasta").href = json.url;
-    document.getElementById("link-pasta").innerText = json.url;
     document.getElementById("upload-resultado").style.display = "block";
-    fb.innerText = "SUCESSO!"; fb.style.color = "green";
+    fb.innerText = "PASTA SELECIONADA COM SUCESSO!"; fb.style.color = "green";
   })
-  .catch(err => {
-    fb.innerText = "ERRO: " + err.message; fb.style.color = "red";
-  })
+  .catch(err => { fb.innerText = "ERRO: " + err.message; fb.style.color = "red"; })
   .finally(() => { btn.disabled = false; btn.innerText = "Gerar Link de Upload"; });
 }
 
-// ─── TECLADO (Acessibilidade) ───────────────────────────────────────────
 function onKeyDown(e) {
   if (document.getElementById("modal").classList.contains("open")) {
     if (e.key === "Escape") fecharModal();
     if (e.key === "ArrowLeft") navegarModal(-1);
     if (e.key === "ArrowRight") navegarModal(1);
-  } else if (document.getElementById("modal-upload").classList.contains("open")) {
-    if (e.key === "Escape") fecharUpload();
+  } else if (S.modoSitePlanilha === "teatro") {
+    if (e.key === "ArrowLeft") navegarTeatro(-1);
+    if (e.key === "ArrowRight") navegarTeatro(1);
   }
 }
 </script>
